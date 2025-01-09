@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Diagnosis Expert System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        main {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1, h2 {
+            color:rgb(4, 11, 142);
+        }
+        form {
+            margin: 1rem 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        p {
+            margin: 0.5rem 0;
+        }
+        .result {
+            margin: 1rem 0;
+            font-weight: bold;
+            color: #333;
+        }checkbox
+        hr {
+            margin: 2rem 0;
+            border: 1px solid #ddd;
+        }
+    </style>
+    <script>
+        async function getDiagnosis(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById('diagnosis').innerText = `Diagnosis: ${data.diagnosis}`;
+        }
+
+        async function evaluateSystem() {
+            const response = await fetch('/evaluate');
+            const data = await response.json();
+            document.getElementById('evaluation').innerText = 
+                `Metrics: Accuracy=${data.accuracy.toFixed(2)}, Precision=${data.precision.toFixed(2)}, Recall=${data.recall.toFixed(2)}`;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Medical Diagnosis Expert System</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Diagnose Symptoms</h2>
+            <form onsubmit="getDiagnosis(event)">
+                <label><input type="checkbox" name="fever"> Fever</label>
+                <label><input type="checkbox" name="cough"> Cough</label>
+                <label><input type="checkbox" name="sore_throat"> Sore Throat</label>
+                <button type="submit">Diagnose</button>
+            </form>
+            <p id="diagnosis" class="result"></p>
+        </section>
+        <hr>
+        <section>
+            <h2>System Evaluation</h2>
+                <button onclick="evaluateSystem()">Evaluate System</button>
+            <p id="evaluation" class="result"></p>
+        </section>
+    </main>
+</body>
+</html>
